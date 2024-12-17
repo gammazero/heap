@@ -3,6 +3,7 @@ package heap_test
 import (
 	"cmp"
 	"fmt"
+	"math/rand"
 	"sort"
 	"strings"
 	"testing"
@@ -179,7 +180,7 @@ func TestCreateHeapFromSlice(t *testing.T) {
 	}
 }
 
-func TestAtOutOfRangePanics(t *testing.T) {
+func TestAtFixSetOutOfRangePanics(t *testing.T) {
 	h := heap.New(cmp.Less[int])
 
 	h.Push(1)
@@ -192,6 +193,20 @@ func TestAtOutOfRangePanics(t *testing.T) {
 
 	assertPanics(t, "should panic when index greater than length", func() {
 		h.At(3)
+	})
+
+	assertPanics(t, "should panic when negative index", func() {
+		h.Fix(-1)
+	})
+	assertPanics(t, "should panic when index greater than length", func() {
+		h.Fix(3)
+	})
+
+	assertPanics(t, "should panic when negative index", func() {
+		h.Set(-1, 5)
+	})
+	assertPanics(t, "should panic when index greater than length", func() {
+		h.Set(3, 5)
 	})
 }
 
@@ -232,6 +247,58 @@ func TestPopEmptyPanics(t *testing.T) {
 	})
 }
 
+func TestFix(t *testing.T) {
+	type fruit struct {
+		name  string
+		color string
+	}
+
+	h := heap.New(func(a, b *fruit) bool {
+		return strings.Compare(a.name, b.name) < 0
+	})
+	h.Push(&fruit{"zApple", "red"})
+	h.Push(&fruit{"Banana", "yellow"})
+	h.Push(&fruit{"Lime", "green"})
+
+	t.Log("Before:", h.Peek())
+	for i := 0; i < h.Len(); i++ {
+		f := h.At(i)
+		if f.color == "red" {
+			f.name = "Apple"
+			h.Fix(i)
+			break
+		}
+	}
+	t.Log("After:", h.Peek())
+
+}
+
+func TestSet(t *testing.T) {
+	less := cmp.Less[int]
+	h := heap.New(less)
+	for i := 200; i > 0; i -= 10 {
+		h.Push(i)
+	}
+
+	if h.At(0) != 10 {
+		t.Fatalf("Expected head to be 10, was %d", h.At(0))
+	}
+	h.Set(0, 210)
+	verifyIntHeap(t, h, 0, less)
+
+	for i := 100; i > 0; i-- {
+		elem := rand.Intn(h.Len())
+		v := h.At(elem)
+		if i&1 == 0 {
+			v *= 2
+		} else {
+			v /= 2
+		}
+		h.Set(elem, v)
+		verifyIntHeap(t, h, 0, less)
+	}
+}
+
 func assertPanics(t *testing.T, name string, f func()) {
 	defer func() {
 		if r := recover(); r == nil {
@@ -263,6 +330,19 @@ func verifyIntHeap(t *testing.T, h *heap.Heap[int], i int, less func(a, b int) b
 	}
 }
 
+func BenchmarkDup(b *testing.B) {
+	const n = 10000
+	h := heap.New(cmp.Less[int])
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < n; j++ {
+			h.Push(0) // all elements are the same
+		}
+		for h.Len() > 0 {
+			h.Pop()
+		}
+	}
+}
+
 func Example() {
 	h := heap.New(func(a, b int) bool { return a < b })
 
@@ -282,19 +362,6 @@ func Example() {
 	// 101
 	// 102
 
-}
-
-func ExampleNewFrom() {
-	h := heap.NewFrom(func(a, b int) bool { return a < b }, 5, 2, 3)
-
-	v := h.Pop()
-	fmt.Println(v)
-
-	v = h.Peek()
-	fmt.Println(v)
-	// Output:
-	// 2
-	// 3
 }
 
 func Example_strings() {
@@ -327,4 +394,60 @@ func Example_strings() {
 	// foo
 	// hello
 	// world
+}
+
+func ExampleNewFrom() {
+	h := heap.NewFrom(func(a, b int) bool { return a < b }, 5, 2, 3)
+
+	v := h.Pop()
+	fmt.Println(v)
+
+	v = h.Peek()
+	fmt.Println(v)
+	// Output:
+	// 2
+	// 3
+}
+
+func ExampleFix() {
+	type fruit struct {
+		name  string
+		color string
+	}
+
+	h := heap.New(func(a, b *fruit) bool {
+		return strings.Compare(a.name, b.name) < 0
+	})
+	h.Push(&fruit{"zApple", "red"})
+	h.Push(&fruit{"Banana", "yellow"})
+	h.Push(&fruit{"Lime", "green"})
+
+	fmt.Println("Before:", h.Peek().name)
+	for i := 0; i < h.Len(); i++ {
+		f := h.At(i)
+		if f.color == "red" {
+			f.name = "Apple"
+		}
+		h.Fix(i)
+	}
+	fmt.Println("After:", h.Peek().name)
+
+	// Output:
+	// Before: Banana
+	// After: Apple
+}
+
+func ExampleSet() {
+	h := heap.New(cmp.Less[int])
+	for i := 300; i > 0; i -= 100 {
+		h.Push(i)
+	}
+
+	fmt.Println("Peek before:", h.Peek())
+	h.Set(0, 510)
+	fmt.Println("Peek after:", h.Peek())
+
+	// Output:
+	// Peek before: 100
+	// Peek after: 200
 }

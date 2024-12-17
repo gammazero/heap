@@ -111,6 +111,29 @@ func (h *Heap[T]) At(i int) T {
 	return h.data[i]
 }
 
+// Set replaces the element at index i in the heap and then calls [Fix] to
+// restore the heap condition.
+func (h *Heap[T]) Set(i int, x T) {
+	if i < 0 || i >= len(h.data) {
+		panic("heap: Set index out of range")
+	}
+	h.data[i] = x
+	h.Fix(i)
+}
+
+// Fix re-establishes the heap ordering after the element at index i has changed its value.
+// Changing the value of the element at index i and then calling Fix is equivalent to,
+// but less expensive than, calling [Remove](i) followed by a Push of the new value.
+// The complexity is O(log n) where n = h.Len().
+func (h *Heap[T]) Fix(i int) {
+	if i < 0 || i >= len(h.data) {
+		panic("heap: Fix index out of range")
+	}
+	if !h.down(i) {
+		h.up(i)
+	}
+}
+
 func (h *Heap[T]) down(i int) bool {
 	data := h.data
 	n := len(data)
