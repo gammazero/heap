@@ -8,8 +8,11 @@
 
 Generic implementation of a binary heap.
 
-A binary heap is a tree with the property that each node is the  minimum-valued node in its subtree. This implementation allows the caller to provide a `less` function that determined how the heap is ordered.
+A binary heap is a tree with the property that each node is the minimum-valued node in its subtree. This implementation allows the caller to provide a `less` function that determined how the heap is ordered.
 
+The minimum element in the tree is the root, at index 0.
+
+A heap is a common way to implement a priority queue. To build a priority queue, create a Heap of the type of elements it will hold and specify a "less" function that orders the elements by priority. Use `Push` to add items and `Pop` to remove the item with the greatest precedence.
 
 ## Installation
 

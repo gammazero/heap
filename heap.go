@@ -1,7 +1,12 @@
-// Package heap provides a generic implementation of a binary heap.
+// Package heap provides a generic implementation of a heap. A heap is a tree
+// with the property that each node is the minimum-valued node in its subtree.
 //
-// A binary heap is a tree with the property that each node is the
-// minimum-valued node in its subtree.
+// The minimum element in the tree is the root, at index 0.
+//
+// A heap is a common way to implement a priority queue. To build a priority
+// queue, create a Heap of the type of elements it will hold and specify a
+// "less" function that orders the elements by priority. Use `Push` to add
+// items and `Pop` to remove the item with the greatest precedence.
 package heap
 
 // Heap implements a binary heap.
@@ -10,18 +15,16 @@ type Heap[T any] struct {
 	less func(a, b T) bool
 }
 
-// LessFn is a function that returns whether 'a' is less than 'b'.
-type lessFn[T any] func(a, b T) bool
-
-// New returns a new heap with the given less function.
-func New[T any](less lessFn[T]) *Heap[T] {
+// New returns a new heap with the given less function. The less function
+// returns whether 'a' is less than 'b'.
+func New[T any](less func(a, b T) bool) *Heap[T] {
 	return &Heap[T]{
 		less: less,
 	}
 }
 
 // NewFrom returns a new heap with the given less function and initial data.
-func NewFrom[T any](less lessFn[T], data ...T) *Heap[T] {
+func NewFrom[T any](less func(a, b T) bool, data ...T) *Heap[T] {
 	n := len(data)
 	h := &Heap[T]{
 		less: less,
@@ -30,11 +33,7 @@ func NewFrom[T any](less lessFn[T], data ...T) *Heap[T] {
 	for i := n/2 - 1; i >= 0; i-- {
 		h.down(i)
 	}
-
-	return &Heap[T]{
-		data: data,
-		less: less,
-	}
+	return h
 }
 
 // Len returns the number of elements in the heap.
