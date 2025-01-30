@@ -14,7 +14,6 @@ import (
 type testElem struct {
 	key      string
 	priority int
-	index    int
 }
 
 var prioCmp = func(i, j *testElem) bool {
@@ -256,7 +255,7 @@ func TestFix(t *testing.T) {
 	h := heap.New(func(a, b *fruit) bool {
 		return strings.Compare(a.name, b.name) < 0
 	})
-	h.Push(&fruit{"zApple", "red"})
+	h.Push(&fruit{"unknown", "red"})
 	h.Push(&fruit{"Banana", "yellow"})
 	h.Push(&fruit{"Lime", "green"})
 
@@ -409,7 +408,7 @@ func ExampleNewFrom() {
 	// 3
 }
 
-func ExampleFix() {
+func ExampleHeap_Fix() {
 	type fruit struct {
 		name  string
 		color string
@@ -437,7 +436,7 @@ func ExampleFix() {
 	// After: Apple
 }
 
-func ExampleSet() {
+func ExampleHeap_Set() {
 	h := heap.New(cmp.Less[int])
 	for i := 300; i > 0; i -= 100 {
 		h.Push(i)
