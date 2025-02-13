@@ -417,7 +417,7 @@ func ExampleHeap_Fix() {
 	h := heap.New(func(a, b *fruit) bool {
 		return strings.Compare(a.name, b.name) < 0
 	})
-	h.Push(&fruit{"zApple", "red"})
+	h.Push(&fruit{"unknown", "red"})
 	h.Push(&fruit{"Banana", "yellow"})
 	h.Push(&fruit{"Lime", "green"})
 
