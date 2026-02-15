@@ -8,7 +8,7 @@
 
 Generic implementation of a binary heap.
 
-A binary heap is a tree with the property that each node is the minimum-valued node in its subtree. This implementation allows the caller to provide a `less` function that determined how the heap is ordered.
+A binary heap is a tree with the property that each node is the minimum-valued node in its subtree. This implementation allows the caller to provide a `less` function that determines how the heap is ordered.
 
 The minimum element in the tree is the root, at index 0.
 
@@ -22,11 +22,11 @@ $ go get github.com/gammazero/heap
 
 ## Reading Empty Heap
 
-Since it is OK for the heap to contain an element's zero-value, it is necessary to either panic or return a second boolean value to indicate the heap is empty, when reading or removing an element. This heap panics when reading from an empty heap. This is a run-time check to help catch programming errors, which may be missed if a second return value is ignored. Simply check `Heap.Len()` before reading from the heap.
+Since it is OK for the heap to contain an element's zero-value, it is necessary to either panic or return a second boolean value to indicate the heap is empt, when reading or removing an element. This heap panics when reading from an empty heap. This is a run-time check to help catch programming errors, which may be missed if a second return value is ignored. Simply check `Heap.Len()` before reading from the heap.
 
 ## Generics
 
-Heap uses generics to create a Heap that contains items of the type specified. To create a Heap that holds a specific type, provide a type argument with the `Heap` variable declaration. For example:
+Heap uses generics to create a `Heap` that contains items of the type specified. To create a Heap that holds a specific type, provide a type argument with the `Heap` variable declaration. For example:
 ```go
     intHeap := heap.New(func(a, b int) bool {
         return a < b})
@@ -52,8 +52,8 @@ func main() {
 	h.Push("bar")
 	h.Push("baz")
 
-	fmt.Println(h.Len())
-	fmt.Println(h.Peek())
+	fmt.Println("length:", h.Len())
+	fmt.Println("first:", h.Peek())
 	fmt.Println(h.Pop())
 	fmt.Println(h.Pop())
 	fmt.Println(h.Pop())
@@ -67,8 +67,8 @@ func main() {
 	}
 
 	// Output:
-	// 3
-	// bar
+	// length: 3
+	// first: bar
 	// bar
 	// baz
 	// foo
