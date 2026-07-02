@@ -1,3 +1,3 @@
 module github.com/gammazero/heap
 
-go 1.22
+go 1.25

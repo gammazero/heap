@@ -78,7 +78,7 @@ func TestHeap(t *testing.T) {
 func TestRemove0(t *testing.T) {
 	less := cmp.Less[int]
 	h := heap.New(less)
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		h.Push(i)
 	}
 	verifyIntHeap(t, h, 0, less)
@@ -96,7 +96,7 @@ func TestRemove0(t *testing.T) {
 func TestRemove1(t *testing.T) {
 	less := cmp.Less[int]
 	h := heap.New(less)
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		h.Push(i)
 	}
 
@@ -114,7 +114,7 @@ func TestRemove2(t *testing.T) {
 
 	less := cmp.Less[int]
 	h := heap.New(less)
-	for i := 0; i < N; i++ {
+	for i := range N {
 		h.Push(i)
 	}
 
@@ -329,11 +329,11 @@ func verifyIntHeap(t *testing.T, h *heap.Heap[int], i int, less func(a, b int) b
 	}
 }
 
-func BenchmarkDup(b *testing.B) {
+func BenchmarkPushPop10k(b *testing.B) {
 	const n = 10000
 	h := heap.New(cmp.Less[int])
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < n; j++ {
+	for b.Loop() {
+		for range n {
 			h.Push(0) // all elements are the same
 		}
 		for h.Len() > 0 {
