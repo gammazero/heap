@@ -2,7 +2,6 @@
 
 [![GoDoc](https://pkg.go.dev/badge/github.com/gammazero/heap)](https://pkg.go.dev/github.com/gammazero/heap)
 [![Build Status](https://github.com/gammazero/heap/actions/workflows/go.yml/badge.svg)](https://github.com/gammazero/heap/actions/workflows/go.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/gammazero/heap)](https://goreportcard.com/report/github.com/gammazero/heap)
 [![codecov](https://codecov.io/gh/gammazero/heap/branch/master/graph/badge.svg)](https://codecov.io/gh/gammazero/heap)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
